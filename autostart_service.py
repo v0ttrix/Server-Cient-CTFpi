@@ -25,26 +25,22 @@ def parse_args() -> argparse.Namespace:
             "If your server uses WEB_ROOT='./build', set --working-dir to the repo root."
         )
     )
-    parser.add_argument
-    (
+    parser.add_argument(
         "--server-path",
         default="/home/ctf-pi/server",
         help="Absolute path to the server binary (default: /home/ctf-pi/server)",
     )
-    parser.add_argument
-    (
+    parser.add_argument(
         "--service-name",
         default="myserver",
         help="Systemd service name (default: myserver)",
     )
-    parser.add_argument
-    (
+    parser.add_argument(
         "--user",
         default="ctf-pi",
         help="Linux user to run the service (default: ctf-pi)",
     )
-    parser.add_argument
-    (
+    parser.add_argument(
         "--working-dir",
         default="/home/ctf-pi",
         help="Working directory for the server (default: /home/ctf-pi)",
@@ -55,8 +51,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:              ##create/install/enable the systemd service
     args = parse_args()
     service_file_path = f"/etc/systemd/system/{args.service_name}.service"
-    service_content = build_service_content
-    (
+    service_content = build_service_content(
         server_path=args.server_path,
         user=args.user,
         working_dir=args.working_dir,
@@ -66,8 +61,7 @@ def main() -> int:              ##create/install/enable the systemd service
     try:                            ##write the unit file to a temp location first
         with open(f"/tmp/{args.service_name}.service", "w", encoding="utf-8") as f:
             f.write(service_content)
-        subprocess.run  ##move into systemd's unit directory ----requires sudo privileges
-        (
+        subprocess.run( ##move into systemd's unit directory ----requires sudo privileges
             ["sudo", "mv", f"/tmp/{args.service_name}.service", service_file_path],
             check=True,
         )
